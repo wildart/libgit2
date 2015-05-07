@@ -15,6 +15,7 @@
 #include "strarray.h"
 #include "transport.h"
 #include "pack.h"
+#include "proxy.h"
 
 /**
  * @file git2/remote.h
@@ -241,9 +242,10 @@ GIT_EXTERN(const git_refspec *)git_remote_get_refspec(const git_remote *remote, 
  * @param direction GIT_DIRECTION_FETCH if you want to fetch or
  * GIT_DIRECTION_PUSH if you want to push
  * @param callbacks the callbacks to use for this connection
+ * @param proxy_opts proxy settings
  * @return 0 or an error code
  */
-GIT_EXTERN(int) git_remote_connect(git_remote *remote, git_direction direction, const git_remote_callbacks *callbacks);
+GIT_EXTERN(int) git_remote_connect(git_remote *remote, git_direction direction, const git_remote_callbacks *callbacks, const git_proxy_options *proxy_opts);
 
 /**
  * Get the remote repository's reference advertisement list
@@ -546,10 +548,16 @@ typedef struct {
 	 * The default is to auto-follow tags.
 	 */
 	git_remote_autotag_option_t download_tags;
+
+	/**
+	 * Proxy options to use, by default no proxy is used.
+	 */
+	git_proxy_options proxy_opts;
 } git_fetch_options;
 
 #define GIT_FETCH_OPTIONS_VERSION 1
-#define GIT_FETCH_OPTIONS_INIT { GIT_FETCH_OPTIONS_VERSION, GIT_REMOTE_CALLBACKS_INIT, GIT_FETCH_PRUNE_UNSPECIFIED, 1 }
+#define GIT_FETCH_OPTIONS_INIT { GIT_FETCH_OPTIONS_VERSION, GIT_REMOTE_CALLBACKS_INIT, GIT_FETCH_PRUNE_UNSPECIFIED, 1, \
+				 GIT_REMOTE_DOWNLOAD_TAGS_UNSPECIFIED, GIT_PROXY_OPTIONS_INIT }
 
 /**
  * Initializes a `git_fetch_options` with default values. Equivalent to
@@ -585,10 +593,15 @@ typedef struct {
 	 * Callbacks to use for this push operation
 	 */
 	git_remote_callbacks callbacks;
+
+	/**
+	* Proxy options to use, by default no proxy is used.
+	*/
+	git_proxy_options proxy_opts;
 } git_push_options;
 
 #define GIT_PUSH_OPTIONS_VERSION 1
-#define GIT_PUSH_OPTIONS_INIT { GIT_PUSH_OPTIONS_VERSION, 0, GIT_REMOTE_CALLBACKS_INIT }
+#define GIT_PUSH_OPTIONS_INIT { GIT_PUSH_OPTIONS_VERSION, 0, GIT_REMOTE_CALLBACKS_INIT, GIT_PROXY_OPTIONS_INIT }
 
 /**
  * Initializes a `git_push_options` with default values. Equivalent to

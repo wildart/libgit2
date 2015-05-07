@@ -8,6 +8,7 @@
 #include "smart.h"
 #include "refs.h"
 #include "refspec.h"
+#include "proxy.h"
 
 static int git_smart__recv_cb(gitno_buffer *buf)
 {
@@ -121,6 +122,7 @@ static int git_smart__connect(
 	const char *url,
 	git_cred_acquire_cb cred_acquire_cb,
 	void *cred_acquire_payload,
+	const git_proxy_options *proxy,
 	int direction,
 	int flags)
 {
@@ -137,6 +139,9 @@ static int git_smart__connect(
 
 	t->url = git__strdup(url);
 	GITERR_CHECK_ALLOC(t->url);
+
+	if (git_proxy_options_dup(&t->proxy, proxy) < 0)
+		return -1;
 
 	t->direction = direction;
 	t->flags = flags;

@@ -10,6 +10,7 @@
 
 #include "git2/net.h"
 #include "git2/types.h"
+#include "git2/proxy.h"
 
 /**
  * @file git2/sys/transport.h
@@ -47,6 +48,7 @@ struct git_transport {
 		const char *url,
 		git_cred_acquire_cb cred_acquire_cb,
 		void *cred_acquire_payload,
+		const git_proxy_options *proxy_opts,
 		int direction,
 		int flags);
 
@@ -59,7 +61,7 @@ struct git_transport {
 		git_transport *transport);
 
 	/* Executes the push whose context is in the git_push object. */
-	int (*push)(git_transport *transport, git_push *push, const git_remote_callbacks *callbacks);
+	int(*push)(git_transport *transport, git_push *push, const git_remote_callbacks *callbacks);
 
 	/* This function may be called after a successful call to connect(), when
 	 * the direction is FETCH. The function performs a negotiation to calculate
