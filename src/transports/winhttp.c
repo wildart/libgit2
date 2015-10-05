@@ -793,7 +793,7 @@ replay:
 		}
 
 		if (!WinHttpReceiveResponse(s->request, 0)) {
-			giterr_set(GITERR_OS, "Failed to receive response");
+			giterr_set(GITERR_OS, "Failed to receive response: 0x%x.", GetLastError());
 			return -1;
 		}
 
